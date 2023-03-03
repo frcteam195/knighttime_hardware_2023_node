@@ -8,10 +8,10 @@
 
 #include "ck_ros_msgs_node/Arm_Status.h"
 #include "ck_ros_msgs_node/Arm_Control.h"
+#include <std_msgs/Float64.h>
 
 #include <string>
 #include <iostream>
-#include <std_msgs/Float64.h>
 #include <math.h>
 
 class AR3_Robot : public hardware_interface::RobotHW
@@ -115,14 +115,14 @@ public:
     {
         (void)time;
         (void)period;
-        // joint_position_[0] = arm_status.arm_base_actual_position * 2 * M_PI;
-        // joint_position_[1] = -1 * arm_status.arm_upper_actual_position * 2 * M_PI;
-        // joint_position_[2] = 0.0;
+        joint_position_[0] = arm_status.arm_base_actual_position * 2 * M_PI;
+        joint_position_[1] = -1 * arm_status.arm_upper_actual_position * 2 * M_PI;
+        joint_position_[2] = 0.0;
 
         // // status is RPM
-        // joint_velocity_[0] = arm_status.arm_base_velocity / 60.0 * 2.0 * M_PI;
-        // joint_velocity_[1] = -1 * arm_status.arm_upper_velocity / 60.0 * 2.0 * M_PI;
-        // joint_velocity_[2] = 0.0;
+        joint_velocity_[0] = arm_status.arm_base_velocity / 60.0 * 2.0 * M_PI;
+        joint_velocity_[1] = -1 * arm_status.arm_upper_velocity / 60.0 * 2.0 * M_PI;
+        joint_velocity_[2] = 0.0;
     }
 
     void write(const ros::Time& time, const ros::Duration& period)
