@@ -1,30 +1,45 @@
-#include "ros/ros.h"
-#include "std_msgs/String.h"
+#include <ros/ros.h>
 
-#include <thread>
-#include <string>
-#include <mutex>
+// #include "hardware_interface.hpp"
+#include "hardware_interface.hpp"
+#include <controller_manager/controller_manager.h>
 
 ros::NodeHandle* node;
 
 int main(int argc, char **argv)
 {
-	/**
-	 * The ros::init() function needs to see argc and argv so that it can perform
-	 * any ROS arguments and name remapping that were provided at the command line.
-	 * For programmatic remappings you can use a different version of init() which takes
-	 * remappings directly, but for most command-line programs, passing argc and argv is
-	 * the easiest way to do it.  The third argument to init() is the name of the node.
-	 *
-	 * You must call one of the versions of ros::init() before using any other
-	 * part of the ROS system.
-	 */
-	ros::init(argc, argv, "knighttime_hardware_node");
+    ros::init(argc, argv, "ar3_hardware");
 
-	ros::NodeHandle n;
+    ros::NodeHandle n;
+    node = &n;
 
-	node = &n;
+    ros::AsyncSpinner spinner(3);
+    spinner.start();
 
-	ros::spin();
-	return 0;
+    AR3_Robot robot(n);
+    robot.init();
+    // hardware_interface::RobotHW robot;
+    controller_manager::ControllerManager cm(&robot, n);
+
+    ros::Time prev_time = ros::Time::now();
+    ros::Duration period = ros::Time::now() - prev_time;
+
+    ros::Rate rate(50);
+
+    while (ros::ok())
+    {
+        ros::Time time = ros::Time::now();
+        period = time - prev_time;
+        prev_time = time;
+
+        robot.read(time, period);
+        cm.update(time, period);
+        robot.write(time, period);
+        // ROS_WARN("Joint 1: %f", robot.get_j1_cmd());
+        // ROS_WARN("Test");
+
+        rate.sleep();
+    }
+
+    return 0;
 }
