@@ -79,7 +79,7 @@ public:
 
         for (std::size_t joint_id = 0; joint_id < num_joints_; ++joint_id)
         {
-            ROS_DEBUG_STREAM_NAMED(name_, "Loading joint name: " << joint_names_[joint_id]);
+            ROS_ERROR_STREAM_NAMED(name_, "Loading joint name: " << joint_names_[joint_id]);
 
             // Create joint state interface
             joint_state_interface_.registerHandle(hardware_interface::JointStateHandle(
@@ -117,16 +117,13 @@ public:
     {
         (void)time;
         (void)period;
-        // joint_position_[0] = arm_status.arm_base_actual_position * 2 * M_PI;
-        // joint_position_[1] = -1 * arm_status.arm_upper_actual_position * 2 * M_PI;
+        // joint_position_[0] = ck::math::deg2rad(arm_status.arm_base_angle);
+        // joint_position_[1] = ck::math::deg2rad(arm_status.arm_upper_angle);
         // joint_position_[2] = 0.0;
-        joint_position_[0] = ck::math::deg2rad(arm_status.arm_base_angle);
-        joint_position_[1] = ck::math::deg2rad(arm_status.arm_upper_angle);
-        joint_position_[2] = 0.0;
 
-        // // status is RPM
+        // // // status is RPM
         // joint_velocity_[0] = arm_status.arm_base_velocity / 60.0 * 2.0 * M_PI;
-        // joint_velocity_[1] = -1 * arm_status.arm_upper_velocity / 60.0 * 2.0 * M_PI;
+        // joint_velocity_[1] = arm_status.arm_upper_velocity / 60.0 * 2.0 * M_PI;
         // joint_velocity_[2] = 0.0;
     }
 
@@ -137,21 +134,20 @@ public:
         for (size_t i = 0; i < num_joints_; i++)
         {
             // ROS_WARN("Joint %ld: %f", i+1, joint_velocity_[i]);
-            // joint_position_[i] += joint_velocity_command_[i] * period.toSec();
-            // joint_velocity_[i] = joint_velocity_command_[i];
-            // joint_position_[i] = joint_position_command_[i];
+            joint_position_[i] += joint_velocity_command_[i] * period.toSec();
+            joint_velocity_[i] = joint_velocity_command_[i];
         }
         // ROS_WARN("Joint 1 Velocity command: %f", joint_velocity_command_[0]);
         // ROS_WARN("Joint 1 Position command: %f", joint_position_command_[0]);
         // std::cout << std::endl;
 
         ck_ros_msgs_node::Arm_Control arm_control;
-        // arm_control.arm_base_requested_position = joint_velocity_command_[0] * 60.0 / 2.0 * M_PI;
-        // arm_control.arm_upper_requested_position = -1 * joint_velocity_command_[1] * 60.0 / 2.0 * M_PI;
-        // arm_control.arm_wrist_requested_position = 0.0;
-        arm_control.arm_base_requested_position = joint_position_command_[0];
-        arm_control.arm_upper_requested_position = joint_position_command_[1];
+        arm_control.arm_base_requested_position = joint_velocity_command_[0] * 60.0 / 2.0 * M_PI;
+        arm_control.arm_upper_requested_position = joint_velocity_command_[1] * 60.0 / 2.0 * M_PI;
         arm_control.arm_wrist_requested_position = 0.0;
+        // arm_control.arm_base_requested_position = joint_position_command_[0];
+        // arm_control.arm_upper_requested_position = joint_position_command_[1];
+        // arm_control.arm_wrist_requested_position = 0.0;
         arm_control.extend = 0.0;
 
         arm_control_pub.publish(arm_control);

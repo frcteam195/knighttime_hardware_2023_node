@@ -13,7 +13,7 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
     node = &n;
 
-    ros::AsyncSpinner spinner(3);
+    ros::AsyncSpinner spinner(1);
     spinner.start();
 
     AR3_Robot robot(n);
