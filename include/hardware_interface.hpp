@@ -131,14 +131,14 @@ public:
         (void)period;
         for (size_t i = 0; i < num_joints_; i++)
         {
-            ROS_WARN("Joint %ld: %f", i+1, joint_velocity_command_[i]);
+            // ROS_WARN("Joint %ld: %f", i+1, joint_velocity_command_[i]);
             joint_position_[i] += joint_velocity_command_[i] * period.toSec();
             joint_velocity_[i] = joint_velocity_command_[i];
             // joint_position_[i] = joint_position_command_[i];
         }
         // ROS_WARN("Joint 1 Velocity command: %f", joint_velocity_command_[0]);
         // ROS_WARN("Joint 1 Position command: %f", joint_position_command_[0]);
-        std::cout << std::endl;
+        // std::cout << std::endl;
 
         ck_ros_msgs_node::Arm_Control arm_control;
         arm_control.arm_base_requested_position = joint_velocity_command_[0] * 60.0 / 2.0 * M_PI;
