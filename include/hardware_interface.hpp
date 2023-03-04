@@ -1,7 +1,7 @@
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/robot_hw.h>
-#include <urdf/model.h>
+// #include <urdf/model.h>
 
 #include <rosparam_shortcuts/rosparam_shortcuts.h>
 // #include <moveit_ros_control_interface/ControllerHandle.h>
@@ -9,6 +9,8 @@
 #include "ck_ros_msgs_node/Arm_Status.h"
 #include "ck_ros_msgs_node/Arm_Control.h"
 #include <std_msgs/Float64.h>
+
+#include <ck_utilities/CKMath.hpp>
 
 #include <string>
 #include <iostream>
@@ -115,14 +117,17 @@ public:
     {
         (void)time;
         (void)period;
-        joint_position_[0] = arm_status.arm_base_actual_position * 2 * M_PI;
-        joint_position_[1] = -1 * arm_status.arm_upper_actual_position * 2 * M_PI;
+        // joint_position_[0] = arm_status.arm_base_actual_position * 2 * M_PI;
+        // joint_position_[1] = -1 * arm_status.arm_upper_actual_position * 2 * M_PI;
+        // joint_position_[2] = 0.0;
+        joint_position_[0] = ck::math::deg2rad(arm_status.arm_base_angle);
+        joint_position_[1] = ck::math::deg2rad(arm_status.arm_upper_angle);
         joint_position_[2] = 0.0;
 
         // // status is RPM
-        joint_velocity_[0] = arm_status.arm_base_velocity / 60.0 * 2.0 * M_PI;
-        joint_velocity_[1] = -1 * arm_status.arm_upper_velocity / 60.0 * 2.0 * M_PI;
-        joint_velocity_[2] = 0.0;
+        // joint_velocity_[0] = arm_status.arm_base_velocity / 60.0 * 2.0 * M_PI;
+        // joint_velocity_[1] = -1 * arm_status.arm_upper_velocity / 60.0 * 2.0 * M_PI;
+        // joint_velocity_[2] = 0.0;
     }
 
     void write(const ros::Time& time, const ros::Duration& period)
@@ -131,9 +136,9 @@ public:
         (void)period;
         for (size_t i = 0; i < num_joints_; i++)
         {
-            // ROS_WARN("Joint %ld: %f", i+1, joint_velocity_command_[i]);
-            joint_position_[i] += joint_velocity_command_[i] * period.toSec();
-            joint_velocity_[i] = joint_velocity_command_[i];
+            // ROS_WARN("Joint %ld: %f", i+1, joint_velocity_[i]);
+            // joint_position_[i] += joint_velocity_command_[i] * period.toSec();
+            // joint_velocity_[i] = joint_velocity_command_[i];
             // joint_position_[i] = joint_position_command_[i];
         }
         // ROS_WARN("Joint 1 Velocity command: %f", joint_velocity_command_[0]);
@@ -141,8 +146,11 @@ public:
         // std::cout << std::endl;
 
         ck_ros_msgs_node::Arm_Control arm_control;
-        arm_control.arm_base_requested_position = joint_velocity_command_[0] * 60.0 / 2.0 * M_PI;
-        arm_control.arm_upper_requested_position = -1 * joint_velocity_command_[1] * 60.0 / 2.0 * M_PI;
+        // arm_control.arm_base_requested_position = joint_velocity_command_[0] * 60.0 / 2.0 * M_PI;
+        // arm_control.arm_upper_requested_position = -1 * joint_velocity_command_[1] * 60.0 / 2.0 * M_PI;
+        // arm_control.arm_wrist_requested_position = 0.0;
+        arm_control.arm_base_requested_position = joint_position_command_[0];
+        arm_control.arm_upper_requested_position = joint_position_command_[1];
         arm_control.arm_wrist_requested_position = 0.0;
         arm_control.extend = 0.0;
 
@@ -178,7 +186,7 @@ private:
     // double eff[6];
     std::vector<std::string> joint_names_;
     std::size_t num_joints_;
-    urdf::Model* urdf_model_;
+    // urdf::Model* urdf_model_;
 
     // Modes
     bool use_rosparam_joint_limits_;
