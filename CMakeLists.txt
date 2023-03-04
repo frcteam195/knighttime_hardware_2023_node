@@ -19,6 +19,8 @@ find_package(catkin REQUIRED COMPONENTS
   ck_utilities_node
   hmi_agent_node
   controller_manager
+  hardware_interface
+  control_msgs
   rosparam_shortcuts
 )
 
@@ -118,12 +120,15 @@ catkin_package(
 #  DEPENDS system_lib
   CATKIN_DEPENDS
     roscpp
+    std_msgs
     message_generation
     message_runtime
     ck_ros_msgs_node
     rio_control_node
     ck_utilities_node
     hmi_agent_node
+    hardware_interface
+    control_msgs
     controller_manager
     rosparam_shortcuts
 )

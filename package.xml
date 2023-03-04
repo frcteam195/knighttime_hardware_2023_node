@@ -39,9 +39,12 @@
   <!--   <exec_depend>roscpp</exec_depend> -->
   <!-- Use build_depend for packages you need at compile time: -->
     <build_depend>message_generation</build_depend>
+    <build_depend>std_msgs</build_depend>
     <build_depend>rio_control_node</build_depend>
     <build_depend>hmi_agent_node</build_depend>
     <build_depend>ck_ros_msgs_node</build_depend>
+    <build_depend>hardware_interface</build_depend>
+    <build_depend>control_msgs</build_depend>
     <build_depend>controller_manager</build_depend>
     <build_depend>rosparam_shortcuts</build_depend>
   <!-- Use build_export_depend for packages you need in order to build against this package: -->
@@ -55,7 +58,10 @@
   <!--   <buildtool_depend>catkin</buildtool_depend> -->
   <!-- Use exec_depend for packages you need at runtime: -->
     <exec_depend>message_runtime</exec_depend>
+    <exec_depend>std_msgs</exec_depend>
     <exec_depend>controller_manager</exec_depend>
+    <exec_depend>hardware_interface</exec_depend>
+    <exec_depend>control_msgs</exec_depend>
     <exec_depend>rosparam_shortcuts</exec_depend>
     <exec_depend>ck_ros_msgs_node</exec_depend>
   <!-- Use test_depend for packages you need only for testing: -->
