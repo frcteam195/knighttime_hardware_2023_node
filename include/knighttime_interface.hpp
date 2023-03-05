@@ -33,9 +33,8 @@ public:
 
 private:
     const ros::NodeHandle& nh_;
-    std::string name_;
+    const std::string name_;
 
-    ros::Publisher pub;
     ros::Subscriber arm_status_sub;
     ros::Publisher arm_control_pub;
 

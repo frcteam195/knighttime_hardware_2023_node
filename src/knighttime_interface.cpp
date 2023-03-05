@@ -4,16 +4,13 @@ KnighttimeRobotHW::KnighttimeRobotHW(const ros::NodeHandle& nh) : nh_(nh), name_
 {
     ros::NodeHandle rpnh(nh_, "hardware_interface");
 
-    pub = rpnh.advertise<std_msgs::Float64>("/test_pub", 10);
     arm_status_sub = rpnh.subscribe("/ArmStatus", 10, &KnighttimeRobotHW::arm_status_cb, this, ros::TransportHints().tcpNoDelay());
     arm_control_pub = rpnh.advertise<ck_ros_msgs_node::Arm_Control>("/ArmControl", 10);
 
-    bool param_found = rpnh.getParam("joints", joint_names_);
-    (void)param_found;
-
-    for (auto name : joint_names_)
+    if (!rpnh.getParam("joints", joint_names_))
     {
-        ROS_ERROR_STREAM("got param " << name);
+        ROS_ERROR_NAMED(name_, "COULD NOT FIND JOINT NAMES PARAM! - EXITING");
+        exit(1);
     }
 }
 
