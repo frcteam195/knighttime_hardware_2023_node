@@ -19,6 +19,8 @@
 #include <iostream>
 #include <math.h>
 
+#include "ck_utilities/Motor.hpp"
+
 class KnighttimeRobotHW : public hardware_interface::RobotHW
 {
 public:
@@ -28,8 +30,9 @@ public:
     void arm_status_cb(const ck_ros_msgs_node::Arm_Status& status);
 
     void read(const ros::Time& time, const ros::Duration& period);
-
     void write(const ros::Time& time, const ros::Duration& period);
+
+    std::vector<std::string> get_joint_names();
 
 private:
     const ros::NodeHandle& nh_;
@@ -37,6 +40,11 @@ private:
 
     ros::Subscriber arm_status_sub;
     ros::Publisher arm_control_pub;
+
+    ros::Publisher vel_cmd_pub;
+
+    // Motor baseMotor;
+    // Motor upperMotor;
 
     ck_ros_msgs_node::Arm_Status arm_status;
 

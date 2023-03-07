@@ -22,6 +22,7 @@ find_package(catkin REQUIRED COMPONENTS
   hardware_interface
   control_msgs
   rosparam_shortcuts
+  trajectory_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -131,6 +132,7 @@ catkin_package(
     control_msgs
     controller_manager
     rosparam_shortcuts
+    trajectory_msgs
 )
 
 ###########
