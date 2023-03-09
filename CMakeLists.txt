@@ -23,6 +23,11 @@ find_package(catkin REQUIRED COMPONENTS
   control_msgs
   rosparam_shortcuts
   trajectory_msgs
+  moveit_msgs
+  moveit_core
+  moveit_ros_planning
+  moveit_ros_planning_interface
+  moveit_ros_move_group
 )
 
 ## System dependencies are found with CMake's conventions
@@ -133,6 +138,11 @@ catkin_package(
     controller_manager
     rosparam_shortcuts
     trajectory_msgs
+    moveit_msgs
+    moveit_core
+    moveit_ros_planning
+    moveit_ros_planning_interface
+    moveit_ros_move_group
 )
 
 ###########

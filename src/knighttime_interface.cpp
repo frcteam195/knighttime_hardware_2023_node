@@ -80,14 +80,14 @@ void KnighttimeRobotHW::read(const ros::Time& time, const ros::Duration& period)
     (void)time;
     (void)period;
 
-    joint_position_[0] = ck::math::deg2rad(arm_status.arm_base_angle);
-    joint_position_[1] = ck::math::deg2rad(arm_status.arm_upper_angle);
-    joint_position_[2] = 0.0;
+    // joint_position_[0] = ck::math::deg2rad(arm_status.arm_base_angle);
+    // joint_position_[1] = ck::math::deg2rad(arm_status.arm_upper_angle);
+    // joint_position_[2] = 0.0;
 
-    // // // status is RPM
-    joint_velocity_[0] = arm_status.arm_base_velocity / 60.0 * 2.0 * M_PI;
-    joint_velocity_[1] = arm_status.arm_upper_velocity / 60.0 * 2.0 * M_PI;
-    joint_velocity_[2] = 0.0;
+    // // // // status is RPM
+    // joint_velocity_[0] = arm_status.arm_base_velocity / 60.0 * 2.0 * M_PI;
+    // joint_velocity_[1] = arm_status.arm_upper_velocity / 60.0 * 2.0 * M_PI;
+    // joint_velocity_[2] = 0.0;
 }
 
 void KnighttimeRobotHW::write(const ros::Time& time, const ros::Duration& period)
@@ -97,21 +97,26 @@ void KnighttimeRobotHW::write(const ros::Time& time, const ros::Duration& period
     for (size_t i = 0; i < num_joints_; i++)
     {
         // ROS_WARN("Joint %ld: %f", i+1, joint_velocity_[i]);
-        // joint_position_[i] += joint_velocity_command_[i] * period.toSec();
-        // joint_velocity_[i] = joint_velocity_command_[i];
+        joint_position_[i] += joint_velocity_command_[i] * period.toSec();
+        joint_velocity_[i] = joint_velocity_command_[i];
         // joint_position_[i] = joint_position_command_[i];
+        joint_effort_[i] = joint_effort_command_[i];
     }
     std_msgs::Float64 real_vel;
     real_vel.data = joint_velocity_command_[1];
 
-    vel_cmd_pub.publish(real_vel);
-    // ROS_WARN("Joint 1 Velocity command: %f", joint_velocity_command_[0]);
-    // ROS_WARN("Joint 1 Position command: %f", joint_position_command_[0]);
-    // std::cout << std::endl;
+    // vel_cmd_pub.publish(real_vel);
+    ROS_WARN("Joint 1 Velocity command: %f", joint_velocity_command_[0]);
+    ROS_WARN("Joint 1 Position command: %f", joint_position_command_[0]);
+    ROS_WARN("Joint 1 Effort Command: %f", joint_effort_command_[0]);
+    std::cout << std::endl;
 
     ck_ros_msgs_node::Arm_Control arm_control;
-    arm_control.arm_base_requested_position = joint_velocity_command_[0] * 60.0 / 2.0 * M_PI;
-    arm_control.arm_upper_requested_position = joint_velocity_command_[1] * 60.0 / 2.0 * M_PI;
+    // arm_control.arm_base_requested_position = joint_velocity_command_[0] * 60.0 / 2.0 * M_PI;
+    // arm_control.arm_upper_requested_position = joint_velocity_command_[1] * 60.0 / 2.0 * M_PI;
+    // arm_control.arm_wrist_requested_position = 0.0;
+    arm_control.arm_base_requested_position = joint_effort_command_[0];
+    arm_control.arm_upper_requested_position = joint_effort_command_[1];
     arm_control.arm_wrist_requested_position = 0.0;
 
     // baseMotor
