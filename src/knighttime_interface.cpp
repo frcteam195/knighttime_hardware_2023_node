@@ -106,10 +106,10 @@ void KnighttimeRobotHW::write(const ros::Time& time, const ros::Duration& period
     real_vel.data = joint_velocity_command_[1];
 
     // vel_cmd_pub.publish(real_vel);
-    ROS_WARN("Joint 1 Velocity command: %f", joint_velocity_command_[0]);
-    ROS_WARN("Joint 1 Position command: %f", joint_position_command_[0]);
-    ROS_WARN("Joint 1 Effort Command: %f", joint_effort_command_[0]);
-    std::cout << std::endl;
+    // ROS_WARN("Joint 1 Velocity command: %f", joint_velocity_command_[0]);
+    // ROS_WARN("Joint 1 Position command: %f", joint_position_command_[0]);
+    // ROS_WARN("Joint 1 Effort Command: %f", joint_effort_command_[0]);
+    // std::cout << std::endl;
 
     ck_ros_msgs_node::Arm_Control arm_control;
     // arm_control.arm_base_requested_position = joint_velocity_command_[0] * 60.0 / 2.0 * M_PI;
